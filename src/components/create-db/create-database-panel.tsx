@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, X } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Plus, X, Smile } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { PropertyRow, type PropertyDraft } from './property-row'
 import { ParentPagePicker } from './parent-page-picker'
 import type { DatabaseNode } from '@/lib/notion/workspace'
@@ -22,6 +23,8 @@ function makeTempId() { return `prop-${nextId++}` }
 export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
   const [name, setName] = useState('')
   const [icon, setIcon] = useState('')
+  const [iconPopoverOpen, setIconPopoverOpen] = useState(false)
+  const iconInputRef = useRef<HTMLInputElement>(null)
   const [parentPage, setParentPage] = useState<PageResult | null>(null)
   const [properties, setProperties] = useState<PropertyDraft[]>([])
   const [loading, setLoading] = useState(false)
@@ -88,24 +91,48 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-4 py-4 flex-1 overflow-y-auto">
-        <div className="flex gap-2">
-          <div className="shrink-0">
-            <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">Icon</Label>
-            <Input
-              value={icon}
-              onChange={(e) => setIcon(e.target.value)}
-              placeholder="🗂️"
-              className="h-8 w-12 text-center text-base px-1"
-              maxLength={2}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">Name</Label>
+        <div>
+          <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">Name</Label>
+          <div className="flex items-center gap-2">
+            {/* Emoji icon picker */}
+            <Popover open={iconPopoverOpen} onOpenChange={(o) => {
+              setIconPopoverOpen(o)
+              if (o) setTimeout(() => iconInputRef.current?.focus(), 50)
+            }}>
+              <PopoverTrigger
+                className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md border border-border bg-muted hover:bg-muted/80 transition-colors cursor-pointer text-base leading-none"
+                aria-label="Set icon"
+              >
+                {icon || <Smile size={14} className="text-muted-foreground" />}
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-3" side="bottom" align="start">
+                <p className="text-[10px] text-muted-foreground mb-2">Paste or type an emoji</p>
+                <div className="flex items-center gap-2">
+                  <Input
+                    ref={iconInputRef}
+                    value={icon}
+                    onChange={(e) => setIcon(e.target.value)}
+                    placeholder="e.g. 🗂️"
+                    className="h-7 text-base text-center flex-1"
+                    maxLength={2}
+                  />
+                  {icon && (
+                    <button
+                      type="button"
+                      onClick={() => { setIcon(''); setIconPopoverOpen(false) }}
+                      className="text-[10px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Database name"
-              className="h-8 text-[11px]"
+              className="h-8 text-[11px] flex-1"
               autoFocus
             />
           </div>
