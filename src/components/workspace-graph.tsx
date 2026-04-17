@@ -215,19 +215,6 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
           </Tooltip>
         </div>
 
-        {/* New database FAB — bottom-right of the canvas, just left of the panel */}
-        <Tooltip label="New database">
-          <button
-            type="button"
-            onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
-            className="graph-chip absolute bottom-4 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
-            style={{ right: 'calc(18rem + 20px)' }}
-            aria-label="New database"
-          >
-            <Plus size={15} />
-          </button>
-        </Tooltip>
-
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -249,6 +236,19 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
           <Controls showInteractive={false} />
           <MiniMap position="bottom-left" style={{ width: 120, height: 80, marginLeft: 48 }} />
         </ReactFlow>
+
+        {/* New database FAB — after ReactFlow so it renders above it, left of the side panel */}
+        <Tooltip label="New database">
+          <button
+            type="button"
+            onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
+            className="graph-chip absolute bottom-4 z-30 flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
+            style={{ right: 'calc(18rem + 20px)' }}
+            aria-label="New database"
+          >
+            <Plus size={15} />
+          </button>
+        </Tooltip>
       </div>
     </GraphHoverContext.Provider>
   )
