@@ -215,12 +215,13 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
           </Tooltip>
         </div>
 
-        {/* New database FAB — bottom-right, before the panel */}
+        {/* New database FAB — bottom-right of the canvas, just left of the panel */}
         <Tooltip label="New database">
           <button
             type="button"
             onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
-            className="graph-chip absolute bottom-4 right-4 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
+            className="graph-chip absolute bottom-4 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
+            style={{ right: 'calc(18rem + 20px)' }}
             aria-label="New database"
           >
             <Plus size={15} />
@@ -246,7 +247,7 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="var(--canvas-dot)" />
           <Controls showInteractive={false} />
-          <MiniMap nodeColor="var(--node-bg)" maskColor="var(--minimap-mask)" position="bottom-left" style={{ width: 120, height: 80, marginLeft: 48 }} />
+          <MiniMap position="bottom-left" style={{ width: 120, height: 80, marginLeft: 48 }} />
         </ReactFlow>
       </div>
     </GraphHoverContext.Provider>

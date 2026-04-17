@@ -147,6 +147,16 @@
   background: var(--canvas);
 }
 
+/* Minimap — CSS variables don't resolve in SVG presentation attributes, apply via CSS */
+.react-flow__minimap-node {
+  fill: var(--node-bg);
+  stroke: var(--node-border);
+  stroke-width: 1;
+}
+.react-flow__minimap-mask {
+  fill: var(--minimap-mask);
+}
+
 .react-flow__node-database {
   background: transparent;
   border: none;
