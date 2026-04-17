@@ -234,11 +234,11 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="var(--canvas-dot)" />
           <Controls showInteractive={false} />
-          <MiniMap position="bottom-left" style={{ width: 120, height: 80, marginLeft: 48 }} />
+          <MiniMap position="bottom-left" className="ml-12" />
         </ReactFlow>
 
         {/* New database FAB — after ReactFlow so it renders above it, left of the side panel */}
-        <div className="absolute bottom-4 z-30" style={{ right: 'calc(18rem + 20px)' }}>
+        <div className="fab-panel-offset absolute bottom-4 z-30">
           <Tooltip label="New database">
             <button
               type="button"

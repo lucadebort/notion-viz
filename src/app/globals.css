@@ -178,7 +178,18 @@
   border-radius: 9999px;
 }
 
+/* Minimap — sized via CSS so no magic numbers in JSX */
+.react-flow__minimap {
+  width: 120px;
+  height: 80px;
+}
+
 /* ─── Graph UI helpers ─── */
+
+/* FAB positioned just left of the right-side panel (w-72 = 18rem) */
+.fab-panel-offset {
+  right: calc(18rem + 1.25rem);
+}
 
 /* Header chip — translucent card surface with blur */
 .graph-chip {
