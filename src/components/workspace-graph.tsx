@@ -206,17 +206,6 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
             {localDatabases.length} databases · {localRelationEdges.length} relations
           </span>
           <div className="w-px h-3 bg-border" />
-          <Tooltip label="New database">
-            <button
-              type="button"
-              onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
-              className="flex items-center justify-center w-7 h-7 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-150 cursor-pointer"
-              aria-label="New database"
-            >
-              <Plus size={13} />
-            </button>
-          </Tooltip>
-          <div className="w-px h-3 bg-border" />
           <Tooltip label="Toggle theme">
             <ThemeToggle />
           </Tooltip>
@@ -225,6 +214,18 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
             <DisconnectButton />
           </Tooltip>
         </div>
+
+        {/* New database FAB — bottom-right, before the panel */}
+        <Tooltip label="New database">
+          <button
+            type="button"
+            onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
+            className="graph-chip absolute bottom-4 right-4 z-10 flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
+            aria-label="New database"
+          >
+            <Plus size={15} />
+          </button>
+        </Tooltip>
 
         <ReactFlow
           nodes={nodes}
@@ -245,7 +246,7 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
         >
           <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="var(--canvas-dot)" />
           <Controls showInteractive={false} />
-          <MiniMap nodeColor="var(--node-bg)" maskColor="var(--minimap-mask)" style={{ width: 120, height: 80 }} />
+          <MiniMap nodeColor="var(--node-bg)" maskColor="var(--minimap-mask)" position="bottom-left" style={{ width: 120, height: 80, marginLeft: 48 }} />
         </ReactFlow>
       </div>
     </GraphHoverContext.Provider>
