@@ -15,7 +15,7 @@ export default async function GraphPage() {
   const { databases, edges } = await fetchWorkspaceGraph(notion)
 
   return (
-    <main className="w-screen h-screen bg-background">
+    <main className="w-full h-full bg-background">
       <WorkspaceGraphClient
         databases={databases}
         edges={edges}

@@ -34,7 +34,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${dmSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="h-full overflow-hidden">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
