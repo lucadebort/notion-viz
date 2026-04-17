@@ -21,6 +21,8 @@ export function ParentPagePicker({ value, onChange }: Props) {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     if (!open) return
 
+    // Immediate fetch on open (empty query), debounce only when typing
+    const delay = query === '' ? 0 : 300
     debounceRef.current = setTimeout(async () => {
       setLoading(true)
       try {
@@ -32,7 +34,7 @@ export function ParentPagePicker({ value, onChange }: Props) {
       } finally {
         setLoading(false)
       }
-    }, 300)
+    }, delay)
   }, [query, open])
 
   if (value) {

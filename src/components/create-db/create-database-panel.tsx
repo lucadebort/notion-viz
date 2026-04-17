@@ -139,7 +139,10 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
         </div>
 
         <div>
-          <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">Parent page</Label>
+          <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">
+            Parent page
+            <span className="normal-case ml-1 opacity-60">(required by Notion)</span>
+          </Label>
           <ParentPagePicker value={parentPage} onChange={setParentPage} />
         </div>
 
