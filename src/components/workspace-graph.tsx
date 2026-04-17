@@ -238,17 +238,18 @@ function GraphInner({ databases: initialDatabases, edges: initialRelationEdges, 
         </ReactFlow>
 
         {/* New database FAB — after ReactFlow so it renders above it, left of the side panel */}
-        <Tooltip label="New database">
-          <button
-            type="button"
-            onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
-            className="graph-chip absolute bottom-4 z-30 flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
-            style={{ right: 'calc(18rem + 20px)' }}
-            aria-label="New database"
-          >
-            <Plus size={15} />
-          </button>
-        </Tooltip>
+        <div className="absolute bottom-4 z-30" style={{ right: 'calc(18rem + 20px)' }}>
+          <Tooltip label="New database">
+            <button
+              type="button"
+              onClick={() => setPanelMode((m) => (m === 'create' ? 'inspect' : 'create'))}
+              className="graph-chip flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors duration-150 cursor-pointer"
+              aria-label="New database"
+            >
+              <Plus size={15} />
+            </button>
+          </Tooltip>
+        </div>
       </div>
     </GraphHoverContext.Provider>
   )
