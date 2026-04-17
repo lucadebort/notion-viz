@@ -28,6 +28,56 @@ export type RelationEdge = {
   isTwoWay: boolean
 }
 
+type NotionDatabaseLike = {
+  id: string
+  title: { plain_text?: string }[]
+  icon?: { type: string; emoji?: string } | null
+  description?: { plain_text?: string }[]
+  url: string
+  last_edited_time: string
+  properties: Record<string, {
+    id: string
+    type: string
+    relation?: { data_source_id: string; type?: string }
+  }>
+}
+
+/** Maps a Notion database API result to our internal DatabaseNode shape. */
+export function mapNotionDatabaseToNode(result: NotionDatabaseLike): DatabaseNode {
+  const name = result.title[0]?.plain_text ?? 'Untitled'
+  const icon = result.icon?.type === 'emoji' ? (result.icon.emoji ?? null) : null
+
+  const description =
+    result.description && result.description.length > 0
+      ? (result.description[0]?.plain_text ?? null)
+      : null
+
+  const rawProperties: PropertyInfo[] = Object.entries(result.properties).map(
+    ([propName, prop]) => ({
+      id: prop.id,
+      name: propName,
+      type: prop.type,
+      relationTargetId:
+        prop.type === 'relation' ? prop.relation?.data_source_id : undefined,
+    })
+  )
+
+  const properties: PropertyInfo[] = [
+    ...rawProperties.filter((p) => p.type === 'title'),
+    ...rawProperties.filter((p) => p.type !== 'title'),
+  ]
+
+  return {
+    id: result.id,
+    name,
+    icon,
+    description,
+    url: result.url,
+    lastEditedTime: result.last_edited_time,
+    properties,
+  }
+}
+
 export async function fetchWorkspaceGraph(client: Client): Promise<{
   databases: DatabaseNode[]
   edges: RelationEdge[]
@@ -49,40 +99,8 @@ export async function fetchWorkspaceGraph(client: Client): Promise<{
     for (const result of response.results) {
       if (!isFullDataSource(result)) continue
 
-      const name = result.title[0]?.plain_text ?? 'Untitled'
-      const icon = result.icon?.type === 'emoji' ? result.icon.emoji : null
-
-      const descriptionRichText = (result as { description?: { plain_text?: string }[] }).description
-      const description =
-        descriptionRichText && descriptionRichText.length > 0
-          ? (descriptionRichText[0]?.plain_text ?? null)
-          : null
-
-      const rawProperties: PropertyInfo[] = Object.entries(result.properties).map(
-        ([propName, prop]) => ({
-          id: prop.id,
-          name: propName,
-          type: prop.type,
-          relationTargetId:
-            prop.type === 'relation' ? prop.relation.data_source_id : undefined,
-        })
-      )
-
-      // Title property is always first in Notion; the API doesn't guarantee order
-      const properties: PropertyInfo[] = [
-        ...rawProperties.filter((p) => p.type === 'title'),
-        ...rawProperties.filter((p) => p.type !== 'title'),
-      ]
-
-      databases.push({
-        id: result.id,
-        name,
-        icon,
-        description,
-        url: result.url,
-        lastEditedTime: result.last_edited_time,
-        properties,
-      })
+      const db = mapNotionDatabaseToNode(result)
+      databases.push(db)
 
       for (const [propName, prop] of Object.entries(result.properties)) {
         if (prop.type !== 'relation') continue

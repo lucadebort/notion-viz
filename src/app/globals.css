@@ -176,6 +176,12 @@
   backdrop-filter: blur(8px);
 }
 
+/* Right-side panel card — translucent card surface with blur */
+.panel-card {
+  background: color-mix(in oklch, var(--card) 85%, transparent);
+  backdrop-filter: blur(12px);
+}
+
 /* Disconnect confirmation pill — destructive tint */
 .confirm-pill {
   background: color-mix(in oklch, var(--destructive) 15%, transparent);
