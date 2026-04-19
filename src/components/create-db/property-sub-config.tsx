@@ -38,7 +38,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
       <select
         value={prop.numberFormat ?? 'number'}
         onChange={(e) => onChange({ ...prop, numberFormat: e.target.value })}
-        className="h-6 px-2 rounded-md border border-border bg-muted text-[10px] text-muted-foreground cursor-pointer w-full"
+        className="h-6 px-2 rounded-md border border-border bg-muted sub-config-text text-muted-foreground cursor-pointer w-full"
       >
         {NUMBER_FORMATS.map((f) => (
           <option key={f.value} value={f.value}>{f.label}</option>
@@ -76,7 +76,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
                 onChange({ ...prop, selectOptions: next })
               }}
               placeholder="Option name"
-              className="h-6 text-[10px] flex-1"
+              className="h-6 sub-config-text flex-1"
             />
             <button
               type="button"
@@ -90,7 +90,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
         <button
           type="button"
           onClick={() => onChange({ ...prop, selectOptions: [...options, { name: '', color: 'default' }] })}
-          className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          className="flex items-center gap-1 sub-config-text text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
         >
           <Plus size={9} /> Add option
         </button>
@@ -104,7 +104,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
         <select
           value={prop.relationDatabaseId ?? ''}
           onChange={(e) => onChange({ ...prop, relationDatabaseId: e.target.value })}
-          className="h-6 px-2 rounded-md border border-border bg-muted text-[10px] text-muted-foreground cursor-pointer w-full"
+          className="h-6 px-2 rounded-md border border-border bg-muted sub-config-text text-muted-foreground cursor-pointer w-full"
         >
           <option value="">Pick database…</option>
           {databases.map((db) => (
@@ -113,7 +113,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
             </option>
           ))}
         </select>
-        <label className="flex items-center gap-2 text-[10px] text-muted-foreground cursor-pointer">
+        <label className="flex items-center gap-2 sub-config-text text-muted-foreground cursor-pointer">
           <input
             type="checkbox"
             checked={prop.isTwoWay ?? false}
@@ -132,7 +132,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
         value={prop.formulaExpression ?? ''}
         onChange={(e) => onChange({ ...prop, formulaExpression: e.target.value })}
         placeholder='e.g. prop("Price") * prop("Quantity")'
-        className="h-6 text-[10px] font-mono w-full"
+        className="h-6 sub-config-text font-mono w-full"
       />
     )
   }
@@ -143,7 +143,7 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
         value={prop.uniqueIdPrefix ?? ''}
         onChange={(e) => onChange({ ...prop, uniqueIdPrefix: e.target.value || undefined })}
         placeholder="Prefix (optional, e.g. ITEM)"
-        className="h-6 text-[10px] w-full"
+        className="h-6 sub-config-text w-full"
         maxLength={10}
       />
     )

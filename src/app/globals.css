@@ -184,7 +184,20 @@
   height: 80px;
 }
 
-/* ─── Notion color palette dots (used in select/multi_select option builder) ─── */
+/* ─── Notion color palette (variables + dot utility classes) ─── */
+:root {
+  --notion-color-default: oklch(0.75 0 0);
+  --notion-color-gray:    oklch(0.60 0 0);
+  --notion-color-brown:   oklch(0.48 0.06 40);
+  --notion-color-orange:  oklch(0.68 0.14 50);
+  --notion-color-yellow:  oklch(0.82 0.12 95);
+  --notion-color-green:   oklch(0.58 0.14 145);
+  --notion-color-blue:    oklch(0.58 0.13 230);
+  --notion-color-purple:  oklch(0.58 0.13 300);
+  --notion-color-pink:    oklch(0.68 0.13 340);
+  --notion-color-red:     oklch(0.58 0.18 20);
+}
+
 .notion-color-dot {
   width: 10px;
   height: 10px;
@@ -192,16 +205,22 @@
   flex-shrink: 0;
   cursor: pointer;
 }
-.nc-default { background: oklch(0.75 0 0); }
-.nc-gray    { background: oklch(0.6 0 0); }
-.nc-brown   { background: oklch(0.48 0.06 40); }
-.nc-orange  { background: oklch(0.68 0.14 50); }
-.nc-yellow  { background: oklch(0.82 0.12 95); }
-.nc-green   { background: oklch(0.58 0.14 145); }
-.nc-blue    { background: oklch(0.58 0.13 230); }
-.nc-purple  { background: oklch(0.58 0.13 300); }
-.nc-pink    { background: oklch(0.68 0.13 340); }
-.nc-red     { background: oklch(0.58 0.18 20); }
+.nc-default { background: var(--notion-color-default); }
+.nc-gray    { background: var(--notion-color-gray); }
+.nc-brown   { background: var(--notion-color-brown); }
+.nc-orange  { background: var(--notion-color-orange); }
+.nc-yellow  { background: var(--notion-color-yellow); }
+.nc-green   { background: var(--notion-color-green); }
+.nc-blue    { background: var(--notion-color-blue); }
+.nc-purple  { background: var(--notion-color-purple); }
+.nc-pink    { background: var(--notion-color-pink); }
+.nc-red     { background: var(--notion-color-red); }
+
+/* Sub-config text size — 10px for dense property config rows */
+.sub-config-text {
+  font-size: 10px;
+  line-height: 1.4;
+}
 
 /* ─── Graph UI helpers ─── */
 
