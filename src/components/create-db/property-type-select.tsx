@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { PropIcon, PROPERTY_TYPE_META } from '@/components/prop-icon'
 import { cn } from '@/lib/utils'
@@ -37,14 +36,13 @@ export function PropertyTypeSelect({ value, onChange }: Props) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          'flex items-center gap-1.5 px-2 h-7 rounded-md border border-border',
-          'text-[11px] text-muted-foreground bg-muted hover:bg-muted/80',
-          'transition-colors duration-100 cursor-pointer whitespace-nowrap shrink-0'
+          'flex items-center justify-center w-7 h-7 rounded-md border border-border',
+          'text-muted-foreground bg-muted hover:bg-muted/80',
+          'transition-colors duration-100 cursor-pointer shrink-0'
         )}
+        aria-label={meta?.label ?? value}
       >
-        <PropIcon type={value} size={11} />
-        <span>{meta?.label ?? value}</span>
-        <ChevronDown size={10} className="opacity-50" />
+        <PropIcon type={value} size={12} />
       </PopoverTrigger>
       <PopoverContent className="w-44 p-1" align="end">
         {CREATABLE_TYPES.map((type) => {
@@ -54,7 +52,7 @@ export function PropertyTypeSelect({ value, onChange }: Props) {
               key={type}
               type="button"
               className={cn(
-                'flex items-center gap-2 w-full px-2 py-1.5 rounded-sm text-[11px] cursor-pointer',
+                'flex items-center gap-2 w-full px-2 py-1.5 rounded-sm form-text cursor-pointer',
                 'hover:bg-muted transition-colors duration-100',
                 value === type && 'bg-muted font-medium'
               )}

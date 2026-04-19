@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Plus, X, Smile } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { PropertyRow, type PropertyDraft } from './property-row'
 import { ParentPagePicker } from './parent-page-picker'
+import { EmojiPicker } from './emoji-picker'
 import type { DatabaseNode } from '@/lib/notion/workspace'
 import type { PageResult } from '@/app/api/pages/search/route'
 
@@ -24,7 +24,6 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
   const [name, setName] = useState('')
   const [icon, setIcon] = useState('')
   const [iconPopoverOpen, setIconPopoverOpen] = useState(false)
-  const iconInputRef = useRef<HTMLInputElement>(null)
   const [parentPage, setParentPage] = useState<PageResult | null>(null)
   const [properties, setProperties] = useState<PropertyDraft[]>([])
   const [loading, setLoading] = useState(false)
@@ -91,70 +90,50 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-4 py-4 flex-1 overflow-y-auto">
-        <div>
-          <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">Name</Label>
+
+        {/* Name + icon */}
+        <div className="flex flex-col gap-1.5">
+          <span className="form-label text-muted-foreground">Name</span>
           <div className="flex items-center gap-2">
-            {/* Emoji icon picker */}
-            <Popover open={iconPopoverOpen} onOpenChange={(o) => {
-              setIconPopoverOpen(o)
-              if (o) setTimeout(() => iconInputRef.current?.focus(), 50)
-            }}>
+            <Popover open={iconPopoverOpen} onOpenChange={setIconPopoverOpen}>
               <PopoverTrigger
                 className="shrink-0 flex items-center justify-center w-8 h-8 rounded-md border border-border bg-muted hover:bg-muted/80 transition-colors cursor-pointer text-base leading-none"
                 aria-label="Set icon"
               >
                 {icon || <Smile size={14} className="text-muted-foreground" />}
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-3" side="bottom" align="start">
-                <p className="text-[10px] text-muted-foreground mb-2">Paste or type an emoji</p>
-                <div className="flex items-center gap-2">
-                  <Input
-                    ref={iconInputRef}
-                    value={icon}
-                    onChange={(e) => setIcon(e.target.value)}
-                    placeholder="e.g. 🗂️"
-                    className="h-7 text-base text-center flex-1"
-                    maxLength={2}
-                  />
-                  {icon && (
-                    <button
-                      type="button"
-                      onClick={() => { setIcon(''); setIconPopoverOpen(false) }}
-                      className="text-[10px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
+              <PopoverContent className="w-auto p-0 border-0 shadow-lg" side="bottom" align="start">
+                <EmojiPicker onSelect={(emoji) => { setIcon(emoji); setIconPopoverOpen(false) }} />
               </PopoverContent>
             </Popover>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Database name"
-              className="h-8 text-[11px] flex-1"
+              className="h-8 form-text flex-1"
               autoFocus
             />
           </div>
         </div>
 
-        <div>
-          <Label className="text-[10px] uppercase tracking-wide text-muted-foreground mb-1 block">
+        {/* Parent page */}
+        <div className="flex flex-col gap-1.5">
+          <span className="form-label text-muted-foreground">
             Parent page
             <span className="normal-case ml-1 opacity-60">(required by Notion)</span>
-          </Label>
+          </span>
           <ParentPagePicker value={parentPage} onChange={setParentPage} />
         </div>
 
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <Label className="text-[10px] uppercase tracking-wide text-muted-foreground">Properties</Label>
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
-              <span className="flex-1 px-2 h-7 rounded-md border border-border bg-muted text-[11px] text-foreground flex items-center">Name</span>
-              <span className="px-2 h-7 rounded-md border border-border bg-muted text-[11px] text-muted-foreground flex items-center shrink-0">Title</span>
-              <span className="w-6 h-6" />
+        {/* Properties */}
+        <div className="flex flex-col gap-1.5">
+          <span className="form-label text-muted-foreground">Properties</span>
+          <div className="rounded-md border border-border overflow-hidden divide-y divide-border">
+            {/* Locked title row */}
+            <div className="flex items-center gap-2 px-2.5 py-2 property-row-locked opacity-50 cursor-not-allowed">
+              <span className="flex-1 px-2 h-7 rounded-md border border-border bg-muted form-text text-foreground flex items-center">Name</span>
+              <span className="px-2 h-7 rounded-md border border-border bg-muted form-text text-muted-foreground flex items-center shrink-0">Title</span>
+              <span className="w-6 h-6 shrink-0" />
             </div>
             {properties.map((prop) => (
               <PropertyRow
@@ -169,7 +148,7 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
           <button
             type="button"
             onClick={addProperty}
-            className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 form-text text-muted-foreground hover:text-foreground transition-colors cursor-pointer self-start"
           >
             <Plus size={11} />
             Add property
@@ -177,7 +156,7 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
         </div>
 
         {error && (
-          <p className="text-[11px] text-destructive">{error}</p>
+          <p className="form-text text-destructive">{error}</p>
         )}
       </form>
 
@@ -186,9 +165,8 @@ export function CreateDatabasePanel({ databases, onCreated, onClose }: Props) {
         <Button
           type="submit"
           size="sm"
-          className="w-full text-[11px] h-8"
+          className="w-full form-text h-8"
           disabled={!canSubmit}
-          onClick={handleSubmit}
         >
           {loading ? 'Creating…' : 'Create database'}
         </Button>

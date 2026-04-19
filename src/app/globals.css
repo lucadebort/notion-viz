@@ -222,6 +222,20 @@
   line-height: 1.4;
 }
 
+/* Form label — 10px uppercase section header */
+.form-label {
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Form text — 11px standard small UI text */
+.form-text {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 /* ─── Graph UI helpers ─── */
 
 /* FAB positioned just left of the right-side panel (w-72 = 18rem) */
@@ -260,6 +274,14 @@
 }
 .prop-row-hovered {
   background: color-mix(in oklch, var(--node-selected-ring) 15%, transparent);
+}
+
+/* Create DB panel — property list rows */
+.property-row-locked {
+  background: color-mix(in oklch, var(--muted) 30%, transparent);
+}
+.property-sub-config {
+  background: color-mix(in oklch, var(--muted) 40%, transparent);
 }
 
 /* Node hover-target — softer ring + glow (no selection) */

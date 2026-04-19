@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import { Plus, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { NOTION_COLORS, type NotionColor } from '@/app/api/database/types'
 import type { PropertyDraft } from './property-row'
@@ -25,6 +27,53 @@ const NUMBER_FORMATS: { value: string; label: string }[] = [
   { value: 'franc', label: 'Franc (Fr)' },
   { value: 'krona', label: 'Krona (kr)' },
 ]
+
+type OptionRowProps = {
+  opt: { name: string; color: NotionColor }
+  onColorChange: (color: NotionColor) => void
+  onNameChange: (name: string) => void
+  onRemove: () => void
+}
+
+function OptionRow({ opt, onColorChange, onNameChange, onRemove }: OptionRowProps) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="flex items-center gap-1.5">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger
+          className={cn('notion-color-dot shrink-0 focus-visible:outline-none', `nc-${opt.color ?? 'default'}`)}
+          aria-label="Pick color"
+        />
+        <PopoverContent className="w-auto p-1.5" side="bottom" align="start">
+          <div className="flex gap-0.5">
+            {NOTION_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => { onColorChange(c); setOpen(false) }}
+                className={cn('notion-color-dot', `nc-${c}`, opt.color === c && 'ring-1 ring-foreground ring-offset-1')}
+                aria-label={c}
+              />
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+      <Input
+        value={opt.name}
+        onChange={(e) => onNameChange(e.target.value)}
+        placeholder="Option name"
+        className="h-6 sub-config-text flex-1"
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer shrink-0"
+      >
+        <X size={10} />
+      </button>
+    </div>
+  )
+}
 
 type Props = {
   prop: PropertyDraft
@@ -52,40 +101,21 @@ export function PropertySubConfig({ prop, databases, onChange }: Props) {
     return (
       <div className="flex flex-col gap-1">
         {options.map((opt, i) => (
-          <div key={i} className="flex items-center gap-1.5">
-            <div className="flex gap-0.5">
-              {NOTION_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => {
-                    const next = [...options]
-                    next[i] = { ...opt, color: c }
-                    onChange({ ...prop, selectOptions: next })
-                  }}
-                  className={cn('notion-color-dot', `nc-${c}`, opt.color === c && 'ring-1 ring-foreground ring-offset-1')}
-                  aria-label={c}
-                />
-              ))}
-            </div>
-            <Input
-              value={opt.name}
-              onChange={(e) => {
-                const next = [...options]
-                next[i] = { ...opt, name: e.target.value }
-                onChange({ ...prop, selectOptions: next })
-              }}
-              placeholder="Option name"
-              className="h-6 sub-config-text flex-1"
-            />
-            <button
-              type="button"
-              onClick={() => onChange({ ...prop, selectOptions: options.filter((_, j) => j !== i) })}
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              <X size={10} />
-            </button>
-          </div>
+          <OptionRow
+            key={i}
+            opt={opt}
+            onColorChange={(color) => {
+              const next = [...options]
+              next[i] = { ...opt, color }
+              onChange({ ...prop, selectOptions: next })
+            }}
+            onNameChange={(name) => {
+              const next = [...options]
+              next[i] = { ...opt, name }
+              onChange({ ...prop, selectOptions: next })
+            }}
+            onRemove={() => onChange({ ...prop, selectOptions: options.filter((_, j) => j !== i) })}
+          />
         ))}
         <button
           type="button"
