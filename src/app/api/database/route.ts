@@ -2,7 +2,32 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { createNotionClient } from '@/lib/notion/client'
 import { mapNotionDatabaseToNode } from '@/lib/notion/workspace'
-import type { CreateDatabaseRequest, CreateDatabaseResponse } from './types'
+import type { CreateDatabaseRequest, CreateDatabaseResponse, CreatePropertyRequest } from './types'
+
+function buildPropertySchema(prop: CreatePropertyRequest): object {
+  switch (prop.type) {
+    case 'number':
+      return { number: { format: prop.numberFormat ?? 'number' } }
+    case 'select':
+      return { select: { options: (prop.selectOptions ?? []).map((o) => ({ name: o.name, color: o.color })) } }
+    case 'multi_select':
+      return { multi_select: { options: (prop.selectOptions ?? []).map((o) => ({ name: o.name, color: o.color })) } }
+    case 'relation':
+      if (!prop.relationDatabaseId) return {}
+      return prop.isTwoWay
+        ? { relation: { database_id: prop.relationDatabaseId, dual_property: {} } }
+        : { relation: { database_id: prop.relationDatabaseId } }
+    case 'formula':
+      return { formula: { expression: prop.formulaExpression ?? '' } }
+    case 'unique_id':
+      return prop.uniqueIdPrefix
+        ? { unique_id: { prefix: prop.uniqueIdPrefix } }
+        : { unique_id: {} }
+    // Simple types — no additional config
+    default:
+      return { [prop.type]: {} }
+  }
+}
 
 export async function POST(req: Request) {
   const cookieStore = await cookies()
@@ -19,20 +44,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'parentPageId and title are required' }, { status: 400 })
   }
 
-  // Build Notion property schema — title is always included as the first property
-  const notionProperties: Record<string, object> = {
-    Name: { title: {} },
-  }
+  // Title property is always first and mandatory
+  const notionProperties: Record<string, object> = { Name: { title: {} } }
 
   for (const prop of properties) {
-    if (!prop.name.trim()) continue
-    if (prop.type === 'title') continue // already added as "Name"
-    if (prop.type === 'relation') {
-      if (!prop.relationDatabaseId) continue
-      notionProperties[prop.name] = { relation: { database_id: prop.relationDatabaseId } }
-    } else {
-      notionProperties[prop.name] = { [prop.type]: {} }
-    }
+    if (!prop.name.trim() || prop.type === 'title') continue
+    const schema = buildPropertySchema(prop)
+    if (Object.keys(schema).length === 0) continue
+    notionProperties[prop.name] = schema
   }
 
   const notion = createNotionClient(accessToken)
@@ -46,11 +65,14 @@ export async function POST(req: Request) {
       properties: notionProperties,
     })
 
-    // databases.create returns DatabaseObjectResponse which uses `database_id` in relations,
-    // unlike DataSourceObjectResponse which uses `data_source_id`. Normalize here.
+    // Normalize: databases.create returns database_id in relations;
+    // our workspace types use data_source_id (from the search API)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normalizedResult = {
       ...result,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       properties: Object.fromEntries(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Object.entries(result.properties ?? {}).map(([k, v]: [string, any]) => [
           k,
           v?.type === 'relation' && v.relation?.database_id

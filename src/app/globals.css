@@ -184,6 +184,25 @@
   height: 80px;
 }
 
+/* ─── Notion color palette dots (used in select/multi_select option builder) ─── */
+.notion-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.nc-default { background: oklch(0.75 0 0); }
+.nc-gray    { background: oklch(0.6 0 0); }
+.nc-brown   { background: oklch(0.48 0.06 40); }
+.nc-orange  { background: oklch(0.68 0.14 50); }
+.nc-yellow  { background: oklch(0.82 0.12 95); }
+.nc-green   { background: oklch(0.58 0.14 145); }
+.nc-blue    { background: oklch(0.58 0.13 230); }
+.nc-purple  { background: oklch(0.58 0.13 300); }
+.nc-pink    { background: oklch(0.68 0.13 340); }
+.nc-red     { background: oklch(0.58 0.18 20); }
+
 /* ─── Graph UI helpers ─── */
 
 /* FAB positioned just left of the right-side panel (w-72 = 18rem) */

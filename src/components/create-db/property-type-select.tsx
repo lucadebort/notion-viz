@@ -11,13 +11,17 @@ const CREATABLE_TYPES = [
   'number',
   'select',
   'multi_select',
+  'status',
   'date',
+  'people',
+  'files',
   'checkbox',
   'url',
   'email',
   'phone_number',
-  'status',
   'relation',
+  'formula',
+  'unique_id',
 ] as const
 
 type Props = {
