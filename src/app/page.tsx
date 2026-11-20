@@ -36,7 +36,7 @@ export default async function HomePage() {
         </a>
 
         <p className="text-xs text-muted-foreground/60">
-          Read-only access. No data stored.
+          No data stored. It writes only the databases you create.
         </p>
       </div>
     </main>

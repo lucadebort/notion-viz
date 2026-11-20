@@ -111,3 +111,7 @@ Built with Next.js 16 (App Router), React 19, React Flow, d3-force, Tailwind CSS
 - **A snapshot per load.** The graph is read when the page loads. Changes made in Notion show up after a reload.
 - **Emoji icons only.** A database with a custom image icon shows without one.
 - **One request for the whole workspace.** Every database is read before the graph appears, so a large workspace takes longer to open.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
